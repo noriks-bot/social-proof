@@ -157,15 +157,10 @@
                     </div>
                     
                     <div class="mb-4">
-                        <label class="block text-sm font-medium mb-2">Praise Focus</label>
-                        <select id="praise" class="w-full bg-gray-700 rounded-lg px-4 py-3">
-                            <option value="quality">⭐ Product Quality</option>
-                            <option value="comfort">😊 Comfort</option>
-                            <option value="durability">💪 Durability</option>
-                            <option value="delivery">🚚 Fast Delivery</option>
-                            <option value="value">💰 Price-Performance</option>
-                            <option value="gift">🎁 Gift</option>
-                        </select>
+                        <label class="flex items-center gap-3 cursor-pointer">
+                            <input type="checkbox" id="isGift" class="w-5 h-5 rounded">
+                            <span class="text-sm font-medium">🎁 Gift (woman buying for partner)</span>
+                        </label>
                     </div>
                     
                     <div class="mb-4" id="starsGroup">
@@ -346,10 +341,8 @@
         async function generate() {
             const country = document.getElementById('country').value;
             const product = document.getElementById('product').value;
-            const praise = document.getElementById('praise').value;
             const starCount = +document.getElementById('stars').value;
-            
-            const isGift = praise === 'gift';
+            const isGift = document.getElementById('isGift').checked;
             const name = getUniqueName(country, isGift);
             const firstName = name.split(' ')[0];
             const revCount = Math.floor(Math.random() * 7) + 1;
@@ -383,7 +376,7 @@
                 const res = await fetch('/launches/api/generate-review', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ country, product, praise, stars: starCount, style: currentStyle, isGift })
+                    body: JSON.stringify({ country, product, stars: starCount, style: currentStyle, isGift })
                 });
                 const data = await res.json();
                 
