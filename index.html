@@ -115,7 +115,27 @@
     </style>
 </head>
 <body class="bg-gray-900 min-h-screen text-white">
-    <div class="container mx-auto px-4 py-8">
+    <!-- LOGIN SCREEN -->
+    <div id="login-screen" class="min-h-screen flex items-center justify-center">
+        <div class="bg-gray-800 rounded-xl p-8 w-full max-w-sm">
+            <h1 class="text-2xl font-bold mb-6 text-center">🎨 Social Proof Generator</h1>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium mb-1">Username</label>
+                    <input type="text" id="login-user" class="w-full bg-gray-700 rounded-lg px-4 py-3 text-white" placeholder="Username" autocomplete="username">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Password</label>
+                    <input type="password" id="login-pass" class="w-full bg-gray-700 rounded-lg px-4 py-3 text-white" placeholder="Password" autocomplete="current-password">
+                </div>
+                <div id="login-error" class="text-red-400 text-sm hidden">Napačno uporabniško ime ali geslo.</div>
+                <button id="login-btn" class="w-full bg-green-600 hover:bg-green-500 font-semibold py-3 rounded-lg">Prijava</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN APP (hidden until login) -->
+    <div id="app-container" class="container mx-auto px-4 py-8" style="display:none">
         <div class="flex items-center justify-between mb-8">
             <h1 class="text-3xl font-bold">🎨 Social Proof Generator</h1>
             <a href="/launches/" class="text-blue-400 hover:text-blue-300">← Back to Dashboard</a>
@@ -453,6 +473,37 @@
         document.getElementById('generateBtn').onclick = generate;
         document.getElementById('downloadBtn').onclick = download;
         document.getElementById('tp-stars').innerHTML = stars(5);
+        
+        // ========== LOGIN ==========
+        const USERS = { petra: 'petra' };
+        
+        function checkAuth() {
+            const saved = localStorage.getItem('sp-auth');
+            if (saved && USERS[saved]) {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('app-container').style.display = 'block';
+                return true;
+            }
+            return false;
+        }
+        
+        function doLogin() {
+            const user = document.getElementById('login-user').value.trim().toLowerCase();
+            const pass = document.getElementById('login-pass').value;
+            if (USERS[user] && USERS[user] === pass) {
+                localStorage.setItem('sp-auth', user);
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('app-container').style.display = 'block';
+            } else {
+                document.getElementById('login-error').classList.remove('hidden');
+            }
+        }
+        
+        document.getElementById('login-btn').onclick = doLogin;
+        document.getElementById('login-pass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+        document.getElementById('login-user').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('login-pass').focus(); });
+        
+        checkAuth();
     </script>
 </body>
 </html>
